@@ -1,11 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void clear_terminal() {
-    // \e[1;1H moves the cursor to row 1, column 1
-    // \e[2J clears the entire screen
-    printf("\e[1;1H\e[2J");
-}
+void clear_terminal(){printf("\e[1;1H\e[2J");} // exclude this and it's applications from pseudocode
 
 typedef struct node{
     int exp;
@@ -15,31 +11,23 @@ typedef struct node{
 
 node* createnode(int given_exp, int given_cof){
     node* n = (node*)malloc(sizeof(node));
-
     if(n == NULL){printf("createnode failed");exit(1);}
-
     n->exp = given_exp;
     n->cof = given_cof;
     n->link = NULL;
     return n;
 };
 
-typedef struct{ //linked list
-    node* head;
-}linkedlist;
+typedef struct{node* head;}linkedlist;
 
 linkedlist* createlist() {
     linkedlist* L = (linkedlist*)malloc(sizeof(linkedlist));
-    
     if(L == NULL){printf("createlist failed\n");exit(1);}
-
-    L->head = NULL; // Safely initialize
+    L->head = NULL;
     return L;
 }
 
-
 linkedlist* mergelist(linkedlist* LA,linkedlist* LB){
-
     if(LA->head == NULL){
         LA->head = LB->head;
         free(LB);
@@ -53,7 +41,6 @@ linkedlist* mergelist(linkedlist* LA,linkedlist* LB){
 
     curr->link = LB->head;
     free(LB);
-
     return LA;
 }
 
@@ -102,15 +89,12 @@ void reduce(linkedlist* L) {
 
 node* promptnode(){
     node* n = (node*)malloc(sizeof(node));
-
     int given_exp, given_cof;
     printf("\nEnter exponent: ");
     scanf("%d", &given_exp);
     printf("\nEnter coefficient: ");
     scanf("%d", &given_cof);
-
     if(n == NULL){printf("createnode failed");exit(1);}
-
     n->exp = given_exp;
     n->cof = given_cof;
     n->link = NULL;
@@ -194,7 +178,6 @@ linkedlist* copylist(linkedlist* L) {
 
 
 int main(){
-
     linkedlist* A = createlist();
     linkedlist* B = createlist();
     linkedlist* C = createlist();
@@ -205,77 +188,62 @@ int main(){
     node* opnode = NULL;
 
     while(1){
-    printf("A ");display(A);
-    printf("B ");display(B);
-    printf("C ");display(C);
-    printf("\nSelect action : \
-        \n1 append to A\
-        \n2 pop from A\
-        \n3 append to B\
-        \n4 pop from B\
-        \n5 add A and B\
-        \n6 exit\
-        \n\t\t:");
-    scanf("%d",&opcode);
+        printf("A ");display(A);
+        printf("B ");display(B);
+        printf("C ");display(C);
+        printf("\nSelect action : \
+            \n1 append to A\
+            \n2 pop from A\
+            \n3 append to B\
+            \n4 pop from B\
+            \n5 add A and B\
+            \n6 exit\
+            \n\t\t:");
+        scanf("%d",&opcode);
 
-    switch (opcode)
-    {
-    case 1:
-        opnode = promptnode();
+        switch (opcode)
+        {
+        case 1:
+            opnode = promptnode();
+            clear_terminal();
+            appendnode(A,opnode);
+            break;
 
-        clear_terminal();
-
-        appendnode(A,opnode);
-
-        break;
-
-    case 2:
-        clear_terminal();
-
-        popnode(A);
-
-        break;
-    
-    case 3:
-        opnode = promptnode();
-
-        clear_terminal();
-
-        appendnode(B,opnode);
-
-        break;
-
-    case 4:
-        clear_terminal();
-
-        popnode(B);
-
-        break;
+        case 2:
+            clear_terminal();
+            popnode(A);
+            break;
         
-    case 5:
-        clear_terminal();
-        C = mergelist(copylist(A),copylist(B));
-        insertionSortList(C);
-        reduce(C);
-        printf("List A and B merged into C\n");
-        break;
+        case 3:
+            opnode = promptnode();
+            clear_terminal();
+            appendnode(B,opnode);
+            break;
 
-    case 6:
-        clear_terminal();
+        case 4:
+            clear_terminal();
+            popnode(B);
+            break;
+            
+        case 5:
+            clear_terminal();
+            C = mergelist(copylist(A),copylist(B));
+            insertionSortList(C);
+            reduce(C);
+            printf("List A and B merged into C\n");
+            break;
 
-        printf("\nprogram exiting\n");
+        case 6:
+            clear_terminal();
+            printf("\nprogram exiting\n");
+            exit(0);
+            break;
 
-        exit(0);
-        break;
-
-    default:
-        clear_terminal();
-        printf("\nInvalid option");
-        break;
-    }
-
-    }
-
+        default:
+            clear_terminal();
+            printf("\nInvalid option");
+            break;
+        }}
     printf("\n");
     return 0;
 }

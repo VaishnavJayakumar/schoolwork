@@ -1,99 +1,70 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
-void clear_terminal() {printf("\e[1;1H\e[2J");}
+void clear_terminal(){printf("\e[1;1H\e[2J");} // exclude this and it's applications from pseudocode
 
 typedef struct node{
     int data;
-    struct node* prev;
-    struct node* next;
+    struct node* link;
 }node;
 
 node* createnode(int given_value){
     node* n = (node*)malloc(sizeof(node));
-
     if(n == NULL){printf("createnode failed");exit(1);}
-
     n->data = given_value;
-    n->prev = NULL;
-    n->next = NULL;
+    n->link = NULL;
     return n;
-}
+};
 
 typedef struct{node* head;}linkedlist;
 
 linkedlist* createlist() {
     linkedlist* L = (linkedlist*)malloc(sizeof(linkedlist));
-
     if(L == NULL){printf("createlist failed\n");exit(1);}
-
     L->head = NULL;
     return L;
 }
 
 void prependnode(linkedlist* L, int given_value){
     node* new_node = createnode(given_value);
-
-    new_node->next = L->head;
-    new_node->prev = NULL;
-
-    if (L->head != NULL) {
-        L->head->prev = new_node;
-    }
-
+    new_node->link = L->head;
     L->head = new_node;
+    return;
 }
 
 void appendnode(linkedlist* L, int given_value){
     node* new_node = createnode(given_value);
-
     if (L->head == NULL) {
         L->head = new_node;
         return;
     }
-
     node* curr = L->head;
-    while (curr->next != NULL) {
-        curr = curr->next;
+    while (curr->link != NULL) {
+        curr = curr->link;
     }
-    new_node->prev = curr;
-    curr->next = new_node;
+    curr->link = new_node;
 }
 
-void insertnode(linkedlist* L, int given_value, int pos){
-    if (pos < 0) {
-        printf("Position out of bounds\n");
-        return;
-    }
-
+void insertnode(linkedlist* L, int given_value,int pos){
+    node* new_node = createnode(given_value);
     if (pos == 0) {
-        prependnode(L, given_value);
-        printf("Inserted %d at position %d\n", given_value, pos);
+        new_node->link = L->head;
+        L->head = new_node;
         return;
     }
-
     node* curr = L->head;
     for (int i = 0; i < pos - 1 && curr != NULL; i++) {
-        curr = curr->next;
+        curr = curr->link;
     }
-
     if (curr == NULL) {
         printf("Position out of bounds\n");
+        free(new_node);
         return;
     }
-
-    node* new_node = createnode(given_value);
-
-    new_node->next = curr->next;
-    new_node->prev = curr;
-
-    if (curr->next != NULL) {          /* not inserting at the tail */
-        curr->next->prev = new_node;
-    }
-    curr->next = new_node;
-
-    printf("Inserted %d at position %d\n", given_value, pos);
+    new_node->link = curr->link;
+    curr->link = new_node; 
+    printf("Inserted %d at position %d\n",given_value,pos);
+    
 }
 
 void popnode(linkedlist* L){
@@ -101,124 +72,99 @@ void popnode(linkedlist* L){
         printf("No elements to pop");
         return;
     }
-
-    if (L->head->next == NULL) {
+    if (L->head->link == NULL) {
         printf("Popped value: %d", L->head->data);
         free(L->head);
         L->head = NULL;
         return;
     }
-
     node* curr = L->head;
-    while (curr->next->next != NULL) {
-        curr = curr->next;
+    while (curr->link->link != NULL) {
+        curr = curr->link;
     }
-
-    printf("Popped value: %d", curr->next->data);
-    free(curr->next);
-    curr->next = NULL;
+    free(curr->link);
+    curr->link = NULL;
 }
 
-void deletenode(linkedlist* L, int pos){
+void deletenode(linkedlist* L,int pos){
     if (L->head == NULL) {
         printf("No elements to delete");
         return;
     }
-
-    if (pos < 0) {
-        printf("Invalid position %d, node does not exist", pos);
+    if (pos == 0) {
+        node* temp = L->head;
+        L->head = L->head->link;
+        free(temp);
+        printf("element index 0 deleted");
         return;
     }
-
-    node* curr = L->head;
-    for (int i = 0; i < pos && curr != NULL; i++) {
-        curr = curr->next;
+    node* prev = L->head;
+    node* curr = prev->link;
+    for (int i = 0; i < pos - 1 && curr != NULL; i++) {
+        prev = prev->link;
+        curr = curr->link;
     }
-
-    if (curr == NULL) {
-        printf("Invalid position %d, node does not exist", pos);
+    if(curr == NULL){
+        printf("Invalid position %d, node does not exist",pos);
         return;
-    }
-
-    if (curr->prev != NULL) {
-        curr->prev->next = curr->next;
-    } else {
-        L->head = curr->next;          /* deleting the head */
-    }
-
-    if (curr->next != NULL) {
-        curr->next->prev = curr->prev; /* not deleting the tail */
-    }
-
+        }
+    prev->link = curr->link;
     free(curr);
-    printf("element index %d deleted", pos);
+    printf("element index %d deleted",pos);
 }
 
 
 void deletevalue(linkedlist* L, int val){
     int flag = 0;
     int pos = 0;
-
     if (L->head == NULL){
         printf("\nEmpty linked list\n");
         return;
     }
-
-    node* curr = L->head;
-
+    node dummy;
+    dummy.link = L->head;
+    node* prev = &dummy;
+    node* curr = prev->link;
     while (curr != NULL){
-        node* nextnode = curr->next;
-
         if (curr->data == val){
-            if (curr->prev != NULL) {
-                curr->prev->next = curr->next;
-            } else {
-                L->head = curr->next;
-            }
-
-            if (curr->next != NULL) {
-                curr->next->prev = curr->prev;
-            }
-
-            free(curr);
+            node* toDelete = curr;
+            prev->link = curr->link;
+            curr = prev->link;
+            free(toDelete);
             printf("\nelement index %d deleted", pos);
             flag = 1;
+        } else {
+            prev = curr;
+            curr = curr->link;
         }
-
-        curr = nextnode;
         pos++;
     }
-
+    L->head = dummy.link;
     if (!flag){
         printf("No elements are deleted");
     }
+    return;
 }
 
 void display(linkedlist* L){
-
     if (L->head == NULL) {
         printf("\nEmpty linked list\n");
         return;
     }
-
     node* curr = L->head;
-    printf("\nll state: >|");
-    while (curr != NULL) {
-        printf(" <--> %d", curr->data);
-        curr = curr->next;
+    printf("\nll state: ");
+    while (curr != NULL) { 
+        printf(" %d -->", curr->data);
+        curr = curr->link;
     }
-
-    printf(" <--> |<\n");
+    printf("|<\n");
 }
 
 int main(){
-
     linkedlist* A = createlist();
-
     int opcode = 0;
     int operand = 0;
     int operand2 = 0;
-
     while(1){
     display(A);
     printf("\nSelect action : \
@@ -226,87 +172,55 @@ int main(){
         \n2 insert node at a position\
         \n3 insert node at end\
         \n4 delete node at a position\
-        \n5 delete node by a particular value\
+        \n5 delete node by a particularvalue\
         \n6 exit\
         \n\t\t:");
-
-    if (scanf("%d",&opcode) != 1) {
-        clear_terminal();
-        printf("\nInvalid input\n");
-        exit(1);
-    }
-
+    scanf("%d",&opcode);
     switch (opcode)
     {
     case 1:
         printf("\nnewnode value:");
         scanf("%d",&operand);
-
         clear_terminal();
-
         prependnode(A,operand);
-
-        break;
-
+        break;  
     case 2:
         printf("\nnewnode position:");
         scanf("%d",&operand2);
-
         printf("\nnewnode value:");
         scanf("%d",&operand);
-
         clear_terminal();
-
         insertnode(A,operand,operand2);
-
         break;
-
     case 3:
         printf("\nnewnode value:");
         scanf("%d",&operand);
-
         clear_terminal();
-
         appendnode(A,operand);
-
         break;
-
     case 4:
         printf("\ndeleting node position:");
         scanf("%d",&operand);
-
         clear_terminal();
-
         deletenode(A,operand);
-
         break;
-
     case 5:
         printf("\ndeleting node of value:");
         scanf("%d",&operand);
-
         clear_terminal();
-
         deletevalue(A,operand);
-
         break;
-
     case 6:
         clear_terminal();
-
         printf("\nprogram exiting\n");
-
         exit(0);
         break;
-
     default:
         clear_terminal();
         printf("\nInvalid option");
         break;
     }
-
     }
-
     printf("\n");
     return 0;
 }
