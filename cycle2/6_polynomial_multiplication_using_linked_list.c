@@ -1,13 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void clear_terminal() {printf("\e[1;1H\e[2J");} // exclude this and it's applications from pseudocode
-
 typedef struct node{
     int exp;
     int cof;
     struct node* link;
 }node;
+
 node* createnode(int given_exp, int given_cof){
     node* n = (node*)malloc(sizeof(node));
     if(n == NULL){printf("createnode failed");exit(1);}
@@ -118,25 +117,6 @@ void appendnode(linkedlist* L, node* new_node){
     curr->link = new_node;
 }
 
-void popnode(linkedlist* L){
-    if (L->head == NULL) {
-        printf("No elements to pop\n");
-        return;
-    }
-    if (L->head->link == NULL) {
-        printf("Popped %c", printnode(L->head));
-        free(L->head);
-        L->head = NULL;
-        return;
-    }
-    node* curr = L->head;
-    while (curr->link->link != NULL) {
-        curr = curr->link;
-    }
-    free(curr->link);
-    curr->link = NULL;
-}
-
 void display(linkedlist* L){
     if (L->head == NULL) {
         printf("Empty linked list\n");
@@ -204,52 +184,36 @@ int main(){
         printf("C ");display(C);
         printf("\nSelect action : \
             \n1 append to A\
-            \n2 pop from A\
-            \n3 append to B\
-            \n4 pop from B\
-            \n5 multiply A and B\
-            \n6 exit\
+            \n2 append to B\
+            \n3 multiply A and B\
+            \n4 exit\
             \n\t\t:");
         scanf("%d",&opcode);
+
         switch (opcode){
         case 1:
             opnode = promptnode();
-            clear_terminal();
             appendnode(A,opnode);
             break;
 
         case 2:
-            clear_terminal();
-            popnode(A);
-            break;
-        
-        case 3:
             opnode = promptnode();
-            clear_terminal();
             appendnode(B,opnode);
             break;
 
-        case 4:
-            clear_terminal();
-            popnode(B);
-            break;
-            
-        case 5:
-            clear_terminal();
+        case 3:           
             C = multiplylists(A,B);
             insertionSortList(C);
             reduce(C);
             printf("List A and B multiplied into C\n");
             break;
     
-        case 6:
-            clear_terminal();
+        case 4:          
             printf("\nprogram exiting\n");
             exit(0);
             break;
 
         default:
-            clear_terminal();
             printf("\nInvalid option");
             break;
         }} printf("\n");return 0;

@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void clear_terminal() {printf("\e[1;1H\e[2J");}
-
 typedef struct node{
     int data;
     struct node* prev;
@@ -182,66 +180,45 @@ int main(){
     while(1){
     display(A);
     printf("\nSelect action : \
-        \n1 insert node at beginning\
-        \n2 insert node at a position\
-        \n3 insert node at end\
-        \n4 delete node at a position\
-        \n5 delete node by a particular value\
-        \n6 exit\
+        \n1 insert node at a position\
+        \n2 delete node at a position\
+        \n3 delete node by a particular value\
+        \n4 exit\
         \n\t\t:");
     if (scanf("%d",&opcode) != 1) {
-        clear_terminal();
+        
         printf("\nInvalid input\n");
         exit(1);
     }
     switch (opcode)
     {
-    case 1:
-        printf("\nnewnode value:");
-        scanf("%d",&operand);
-        clear_terminal();
-        prependnode(A,operand);
-        break;
 
-    case 2:
+    case 1:
         printf("\nnewnode position:");
         scanf("%d",&operand2);
         printf("\nnewnode value:");
         scanf("%d",&operand);
-        clear_terminal();
         insertnode(A,operand,operand2);
-
         break;
 
-    case 3:
-        printf("\nnewnode value:");
-        scanf("%d",&operand);
-        clear_terminal();
-        appendnode(A,operand);
-        break;
-
-    case 4:
+    case 2:
         printf("\ndeleting node position:");
         scanf("%d",&operand);
-        clear_terminal();
         deletenode(A,operand);
         break;
 
-    case 5:
+    case 3:
         printf("\ndeleting node of value:");
         scanf("%d",&operand);
-        clear_terminal();
         deletevalue(A,operand);
         break;
 
-    case 6:
-        clear_terminal();
+    case 4:
         printf("\nprogram exiting\n");
         exit(0);
         break;
 
     default:
-        clear_terminal();
         printf("\nInvalid option");
         break;
     }}

@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void clear_terminal() {printf("\e[1;1H\e[2J");}
 
 typedef struct node{
     int data;
@@ -27,13 +26,6 @@ linkedlist* createlist() {
     return L;
 }
 
-void prependnode(linkedlist* L, int given_value){
-    node* new_node = createnode(given_value);
-    new_node->link = L->head;
-    L->head = new_node;
-    return;
-}
-
 void appendnode(linkedlist* L, int given_value){
     node* new_node = createnode(given_value);
     if (L->head == NULL) {
@@ -45,25 +37,6 @@ void appendnode(linkedlist* L, int given_value){
         curr = curr->link;
     }
     curr->link = new_node;
-}
-
-void popnode(linkedlist* L){
-    if (L->head == NULL) {
-        printf("No elements to pop");
-        return;
-    }
-    if (L->head->link == NULL) {
-        printf("Popped value: %d", L->head->data);
-        free(L->head);
-        L->head = NULL;
-        return;
-    }
-    node* curr = L->head;
-    while (curr->link->link != NULL) {
-        curr = curr->link;
-    }
-    free(curr->link);
-    curr->link = NULL;
 }
 
 void reverse(linkedlist* L){
@@ -114,30 +87,20 @@ int main(){
     case 1:
         printf("\nnewnode value:");
         scanf("%d",&operand);
-        clear_terminal();
         appendnode(A,operand);
         break;
     
     case 2:
-        printf("\ndeleting node at end");
-        clear_terminal();
-        popnode(A);
-        break;
-    
-    case 3:
         printf("\nreversing linked list");
-        clear_terminal();
         reverse(A);
         break;
 
-    case 4:
-        clear_terminal();
+    case 3:
         printf("\nprogram exiting\n");
         exit(0);
         break;
 
     default:
-        clear_terminal();
         printf("\nInvalid option");
         break;
     }}
