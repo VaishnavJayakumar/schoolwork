@@ -1,9 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
-void clear_terminal() {printf("\e[1;1H\e[2J");} // exclude this and it's applications from pseudocode
-
 typedef struct node{
     int data;
     struct node* link;

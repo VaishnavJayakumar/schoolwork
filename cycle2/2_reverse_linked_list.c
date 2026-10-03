@@ -7,6 +7,8 @@ typedef struct node{
     struct node* link;
 }node;
 
+typedef struct{node* head;}linkedlist;
+
 node* createnode(int given_value){
     node* n = (node*)malloc(sizeof(node));
     if(n == NULL){printf("createnode failed");exit(1);}
@@ -15,15 +17,25 @@ node* createnode(int given_value){
     return n;
 };
 
-typedef struct{ //linked list
-    node* head;
-}linkedlist;
-
 linkedlist* createlist() {
     linkedlist* L = (linkedlist*)malloc(sizeof(linkedlist));
     if(L == NULL){printf("createlist failed\n");exit(1);}
     L->head = NULL;
     return L;
+}
+
+void display(linkedlist* L){
+    if (L->head == NULL) {
+        printf("\nEmpty linked list\n");
+        return;
+    }
+    node* curr = L->head;
+    printf("\nll state: ");
+    while (curr != NULL) { 
+        printf(" %d -->", curr->data);
+        curr = curr->link;
+    }
+    printf("|<\n");
 }
 
 void appendnode(linkedlist* L, int given_value){
@@ -44,34 +56,18 @@ void reverse(linkedlist* L){
     node* curr = L->head;
     node* next = NULL;
     while (curr != NULL) {
-        next = curr->link; // Store next node
-        curr->link = prev; // Reverse the link
-        prev = curr;       // Move prev to current
-        curr = next;      // Move to next node
+        next = curr->link;
+        curr->link = prev; 
+        prev = curr;       
+        curr = next;
     }
-    L->head = prev; // Update head to new first node
-}
-
-void display(linkedlist* L){
-
-    if (L->head == NULL) {
-        printf("\nEmpty linked list\n");
-        return;
-    }
-    node* curr = L->head;
-    printf("\nll state: ");
-    while (curr != NULL) { 
-        printf(" %d -->", curr->data);
-        curr = curr->link;
-    }
-    printf("|<\n");
+    L->head = prev; 
 }
 
 int main(){
     linkedlist* A = createlist();
     int opcode = 0;
     int operand = 0;
-    int operand2 = 0;
     while(1){
     display(A);
     printf("\nSelect action : \
