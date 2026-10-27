@@ -10,7 +10,7 @@ typedef struct node{
 typedef struct{node* head;}linkedlist;
 
 node* createnode(int given_value){
-    node* n = (node*)malloc(sizeof(node));
+    node* n = malloc(sizeof(node));
     if(n == NULL){printf("createnode failed");exit(1);}
     n->data = given_value;
     n->link = NULL;
@@ -18,7 +18,7 @@ node* createnode(int given_value){
 };
 
 linkedlist* createlist() {
-    linkedlist* L = (linkedlist*)malloc(sizeof(linkedlist));
+    linkedlist* L = malloc(sizeof(linkedlist));
     if(L == NULL){printf("createlist failed\n");exit(1);}
     L->head = NULL;
     return L;

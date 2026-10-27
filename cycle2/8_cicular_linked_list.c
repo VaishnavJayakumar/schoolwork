@@ -6,70 +6,75 @@ typedef struct node {
     struct node* link;
 } node;
 
+typedef struct {node* head;} linkedlist;
+
 node* createnode(int given_value) {
     node* n = (node*)malloc(sizeof(node));
-
     if (n == NULL) {
         printf("createnode failed\n");
         exit(1);
     }
-
     n->data = given_value;
     n->link = NULL;
-
     return n;
 }
 
-typedef struct {
-    node* head;
-} linkedlist;
-
 linkedlist* createlist() {
-    linkedlist* L = (linkedlist*)malloc(sizeof(linkedlist));
-
+    linkedlist* L = malloc(sizeof(linkedlist));
     if (L == NULL) {
         printf("createlist failed\n");
         exit(1);
     }
-
     L->head = NULL;
     return L;
 }
 
-void insertnode(linkedlist* L, int given_value, int pos) {
+void insertnode(linkedlist* L, int value, int pos) {
     if (pos < 0) {
         printf("Invalid position\n");
         return;
     }
 
-    if (pos == 0) {
-        prependnode(L, given_value);
-        printf("Inserted %d at position %d\n", given_value, pos);
-        return;
-    }
+    node* new_node = createnode(value);
 
     if (L->head == NULL) {
-        printf("Position out of bounds\n");
+        if (pos != 0) {
+            free(new_node);
+            printf("Position out of bounds\n");
+            return;
+        }
+
+        L->head = new_node;
+        new_node->link = new_node;
+        printf("Inserted %d at position %d\n", value, pos);
         return;
     }
 
     node* curr = L->head;
 
-    for (int i = 0; i < pos - 1; i++) {
+    for (int i = 1; i < pos; i++) {
         curr = curr->link;
 
         if (curr == L->head) {
+            free(new_node);
             printf("Position out of bounds\n");
             return;
         }
     }
 
-    node* new_node = createnode(given_value);
+    if (pos == 0) {
+        while (curr->link != L->head)
+            curr = curr->link;
 
-    new_node->link = curr->link;
-    curr->link = new_node;
+        new_node->link = L->head;
+        curr->link = new_node;
+        L->head = new_node;
+    } else {
+        new_node->link = curr->link;
+        curr->link = new_node;
+    }
 
-    printf("Inserted %d at position %d\n", given_value, pos);
+    printf("Inserted %d at position %d\n", value, pos);
 }
 
 void deletenode(linkedlist* L, int pos) {
@@ -77,7 +82,6 @@ void deletenode(linkedlist* L, int pos) {
         printf("No elements to delete\n");
         return;
     }
-
     if (pos < 0) {
         printf("Invalid position\n");
         return;
@@ -148,7 +152,6 @@ void deletevalue(linkedlist* L, int val) {
         if (curr->data == val) {
             flag = 1;
 
-            /* Only one node exists */
             if (curr == L->head && curr->link == L->head) {
                 free(curr);
                 L->head = NULL;
@@ -156,7 +159,6 @@ void deletevalue(linkedlist* L, int val) {
                 return;
             }
 
-            /* Deleting head */
             if (curr == L->head) {
                 node* last = L->head;
 
@@ -178,7 +180,6 @@ void deletevalue(linkedlist* L, int val) {
 
             printf("Element index %d deleted\n", pos);
 
-            /* Restart traversal after deleting head */
             if (curr == L->head) {
                 prev = NULL;
             }
@@ -201,16 +202,12 @@ void display(linkedlist* L) {
         printf("\nEmpty circular linked list\n");
         return;
     }
-
     node* curr = L->head;
-
     printf("\nCircular linked list: ");
-
     do {
         printf("%d --> ", curr->data);
         curr = curr->link;
     } while (curr != L->head);
-
     printf("(head)\n");
 }
 
@@ -238,24 +235,20 @@ int main() {
             case 1:
                 printf("\nNew node position: ");
                 scanf("%d", &operand2);
-
                 printf("\nNew node value: ");
                 scanf("%d", &operand);
-
                 insertnode(A, operand, operand2);
                 break;
 
             case 2:
                 printf("\nDeleting node position: ");
                 scanf("%d", &operand);
-
                 deletenode(A, operand);
                 break;
 
             case 3:
                 printf("\nDeleting node of value: ");
                 scanf("%d", &operand);
-
                 deletevalue(A, operand);
                 break;
 
@@ -268,6 +261,5 @@ int main() {
                 break;
         }
     }
-
     return 0;
 }

@@ -6,19 +6,19 @@ typedef struct node{
     struct node* link;
 }node;
 
+typedef struct{node* head;}linkedlist;
+
 //#/
 node* createnode(int given_value){
-    node* n = (node*)malloc(sizeof(node));
+    node* n = malloc(sizeof(node));
     if(n == NULL){printf("createnode failed");exit(1);}
     n->data = given_value;
     n->link = NULL;
     return n;
 };
 
-typedef struct{node* head;}linkedlist;
-
 linkedlist* createlist() {
-    linkedlist* L = (linkedlist*)malloc(sizeof(linkedlist));
+    linkedlist* L = malloc(sizeof(linkedlist));
     if(L == NULL){printf("createlist failed\n");exit(1);}
     L->head = NULL;
     return L;
@@ -43,7 +43,6 @@ void prependnode(linkedlist* L, int given_value){
     node* new_node = createnode(given_value);
     new_node->link = L->head;
     L->head = new_node;
-    return;
 }
 
 void appendnode(linkedlist* L, int given_value){
@@ -136,17 +135,16 @@ void deletevalue(linkedlist* L, int val){
     if (!flag){
         printf("No elements are deleted");
     }
-    return;
 }
 
-int main(){
-    linkedlist* A = createlist();
+int main() {
+    linkedlist *A = createlist();
     int opcode = 0;
     int operand = 0;
     int operand2 = 0;
-    while(1){
-    display(A);
-    printf("\nSelect action : \
+    while (1) {
+        display(A);
+        printf("\nSelect action : \
         \n1 insert node at beginning\
         \n2 insert node at a position\
         \n3 insert node at end\
@@ -154,50 +152,49 @@ int main(){
         \n5 delete node by a particularvalue\
         \n6 exit\
         \n\t\t:");
-    scanf("%d",&opcode);
-    switch (opcode)
-    {
-    case 1:
-        printf("\nnewnode value:");
-        scanf("%d",&operand);
-        prependnode(A,operand);
-        break;
+        scanf("%d", &opcode);
+        switch (opcode) {
+            case 1:
+                printf("\nnewnode value:");
+                scanf("%d", &operand);
+                prependnode(A, operand);
+                break;
 
-    case 2:
-        printf("\nnewnode position:");
-        scanf("%d",&operand2);
-        printf("\nnewnode value:");
-        scanf("%d",&operand);
-        insertnode(A,operand,operand2);
-        break;
+            case 2:
+                printf("\nnewnode position:");
+                scanf("%d", &operand2);
+                printf("\nnewnode value:");
+                scanf("%d", &operand);
+                insertnode(A, operand, operand2);
+                break;
 
-    case 3:
-        printf("\nnewnode value:");
-        scanf("%d",&operand);
-        appendnode(A,operand);
-        break;
+            case 3:
+                printf("\nnewnode value:");
+                scanf("%d", &operand);
+                appendnode(A, operand);
+                break;
 
-    case 4:
-        printf("\ndeleting node position:");
-        scanf("%d",&operand);
-        deletenode(A,operand);
-        break;
+            case 4:
+                printf("\ndeleting node position:");
+                scanf("%d", &operand);
+                deletenode(A, operand);
+                break;
 
-    case 5:
-        printf("\ndeleting node of value:");
-        scanf("%d",&operand);
-        deletevalue(A,operand);
-        break;
+            case 5:
+                printf("\ndeleting node of value:");
+                scanf("%d", &operand);
+                deletevalue(A, operand);
+                break;
 
-    case 6:
-        printf("\nprogram exiting\n");
-        exit(0);
-        break;
+            case 6:
+                printf("\nprogram exiting\n");
+                exit(0);
+                break;
 
-    default:
-        printf("\nInvalid option");
-        break;
-    }
+            default:
+                printf("\nInvalid option");
+                break;
+        }
     }
     printf("\n");
     return 0;

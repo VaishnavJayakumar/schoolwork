@@ -7,6 +7,8 @@ typedef struct node{
     struct node* next;
 }node;
 
+typedef struct{node* head;}linkedlist;
+
 node* createnode(int given_value){
     node* n = (node*)malloc(sizeof(node));
     if(n == NULL){printf("createnode failed");exit(1);}
@@ -16,13 +18,25 @@ node* createnode(int given_value){
     return n;
 }
 
-typedef struct{node* head;}linkedlist;
-
 linkedlist* createlist() {
     linkedlist* L = (linkedlist*)malloc(sizeof(linkedlist));
     if(L == NULL){printf("createlist failed\n");exit(1);}
     L->head = NULL;
     return L;
+}
+
+void display(linkedlist* L){
+    if (L->head == NULL) {
+        printf("\nEmpty linked list\n");
+        return;
+    }
+    node* curr = L->head;
+    printf("\nll state: >|");
+    while (curr != NULL) {
+        printf(" <--> %d", curr->data);
+        curr = curr->next;
+    }
+    printf(" <--> |<\n");
 }
 
 void prependnode(linkedlist* L, int given_value){
@@ -158,20 +172,6 @@ void deletevalue(linkedlist* L, int val){
     }
 }
 
-void display(linkedlist* L){
-    if (L->head == NULL) {
-        printf("\nEmpty linked list\n");
-        return;
-    }
-    node* curr = L->head;
-    printf("\nll state: >|");
-    while (curr != NULL) {
-        printf(" <--> %d", curr->data);
-        curr = curr->next;
-    }
-    printf(" <--> |<\n");
-}
-
 int main(){
     linkedlist* A = createlist();
     int opcode = 0;
@@ -186,7 +186,7 @@ int main(){
         \n4 exit\
         \n\t\t:");
     if (scanf("%d",&opcode) != 1) {
-        
+
         printf("\nInvalid input\n");
         exit(1);
     }

@@ -7,6 +7,8 @@ typedef struct node{
     struct node* link;
 }node;
 
+typedef struct{node* head;}linkedlist;
+
 node* createnode(int given_exp, int given_cof){
     node* n = (node*)malloc(sizeof(node));
     if(n == NULL){printf("createnode failed");exit(1);}
@@ -16,73 +18,11 @@ node* createnode(int given_exp, int given_cof){
     return n;
 };
 
-typedef struct{node* head;}linkedlist;
-
 linkedlist* createlist() {
     linkedlist* L = (linkedlist*)malloc(sizeof(linkedlist));
     if(L == NULL){printf("createlist failed\n");exit(1);}
     L->head = NULL;
     return L;
-}
-
-linkedlist* mergelist(linkedlist* LA,linkedlist* LB){
-    if(LA->head == NULL){
-        LA->head = LB->head;
-        free(LB);
-        return LA;
-    }
-
-    node* curr = LA->head;
-    while(curr->link!=NULL){
-        curr = curr->link;
-    }
-
-    curr->link = LB->head;
-    free(LB);
-    return LA;
-}
-
-void insertionSortList(linkedlist* L) {
-    if (!L || !L->head || !L->head->link) {
-        return;
-    }
-
-    node* sorted = NULL; 
-    node* curr = L->head;  
-    while (curr != NULL) {
-        node* next_node = curr->link; 
-        if (sorted == NULL || curr->exp > sorted->exp) {
-            curr->link = sorted;
-            sorted = curr;
-        }else{
-            node* search = sorted;
-            while (search->link != NULL && search->link->exp > curr->exp) {
-                search = search->link;
-            }
-            curr->link = search->link;
-            search->link = curr;
-        }
-        curr = next_node; 
-    }
-    L->head = sorted;
-}
-
-void reduce(linkedlist* L) {
-    if (!L || !L->head) {
-        return;
-    }
-
-    node* curr = L->head;
-    while (curr != NULL && curr->link != NULL) {
-        if (curr->exp == curr->link->exp) {
-            curr->cof += curr->link->cof;
-            node* temp = curr->link;
-            curr->link = curr->link->link;
-            free(temp);
-        } else {
-            curr = curr->link;
-        }
-    }
 }
 
 node* promptnode(){
@@ -108,21 +48,7 @@ char printnode(node* n){
     return '\0';
 }
 
-void appendnode(linkedlist* L, node* new_node){
-    if (L->head == NULL) {
-        L->head = new_node;
-        return;
-    }
-
-    node* curr = L->head;
-    while (curr->link != NULL) {
-        curr = curr->link;
-    }
-    curr->link = new_node;
-}
-
 void display(linkedlist* L){
-
     if (L->head == NULL) {
         printf("Empty linked list\n");
         return;
@@ -130,14 +56,81 @@ void display(linkedlist* L){
 
     node* curr = L->head;
     printf("polynomial : ");
-    while (curr != NULL) { 
+    while (curr != NULL) {
         printf("%c + ", printnode(curr));
         curr = curr->link;
     }
-
     printf("0\n");
 }
 
+
+linkedlist* mergelist(linkedlist* LA,linkedlist* LB){
+    if(LA->head == NULL){
+        LA->head = LB->head;
+        free(LB);
+        return LA;
+    }
+    node* curr = LA->head;
+    while(curr->link!=NULL){
+        curr = curr->link;
+    }
+    curr->link = LB->head;
+    free(LB);
+    return LA;
+}
+
+void sortList(linkedlist* L) {
+    if (!L || !L->head || !L->head->link) {
+        return;
+    }
+    node* sorted = NULL; 
+    node* curr = L->head;  
+    while (curr != NULL) {
+        node* next_node = curr->link; 
+        if (sorted == NULL || curr->exp > sorted->exp) {
+            curr->link = sorted;
+            sorted = curr;
+        }else{
+            node* search = sorted;
+            while (search->link != NULL && search->link->exp > curr->exp) {
+                search = search->link;
+            }
+            curr->link = search->link;
+            search->link = curr;
+        }
+        curr = next_node; 
+    }
+    L->head = sorted;
+}
+
+void reduce(linkedlist* L) {
+    if (!L || !L->head) {
+        return;
+    }
+    node* curr = L->head;
+    while (curr != NULL && curr->link != NULL) {
+        if (curr->exp == curr->link->exp) {
+            curr->cof += curr->link->cof;
+            node* temp = curr->link;
+            curr->link = curr->link->link;
+            free(temp);
+        } else {
+            curr = curr->link;
+        }
+    }
+}
+
+void appendnode(linkedlist* L, node* new_node){
+    if (L->head == NULL) {
+        L->head = new_node;
+        return;
+    }
+    node* curr = L->head;
+    while (curr->link != NULL) {
+        curr = curr->link;
+    }
+    curr->link = new_node;
+}
 
 linkedlist* copylist(linkedlist* L) {
     linkedlist* new_list = createlist();
@@ -148,26 +141,21 @@ linkedlist* copylist(linkedlist* L) {
         appendnode(new_list, new_node);
         curr = curr->link;
     }
-
     return new_list;
 }
-
 
 int main(){
     linkedlist* A = createlist();
     linkedlist* B = createlist();
     linkedlist* C = createlist();
-
     int opcode = 0;
-    int operand = 0;
-    int operand2 = 0;
     node* opnode = NULL;
 
     while(1){
         printf("A ");display(A);
         printf("B ");display(B);
         printf("C ");display(C);
-        printf("\nSelect action : \
+        printf("\nSelect action :\
             \n1 append to A\
             \n2 append to B\
             \n3 add A and B\
@@ -189,7 +177,7 @@ int main(){
 
         case 3:
             C = mergelist(copylist(A),copylist(B));
-            insertionSortList(C);
+            sortList(C);
             reduce(C);
             printf("List A and B merged into C\n");
             break;

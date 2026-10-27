@@ -9,7 +9,7 @@ typedef struct node{
 typedef struct{node* head;}linkedlist;
 
 node* createnode(int given_value){
-    node* n = (node*)malloc(sizeof(node));
+    node* n = malloc(sizeof(node));
     if(n == NULL){printf("createnode failed");exit(1);}
     n->data = given_value;
     n->link = NULL;
@@ -17,7 +17,7 @@ node* createnode(int given_value){
 };
 
 linkedlist* createlist() {
-    linkedlist* L = (linkedlist*)malloc(sizeof(linkedlist));
+    linkedlist* L = malloc(sizeof(linkedlist));
     if(L == NULL){printf("createlist failed\n");exit(1);}
     L->head = NULL;
     return L;
@@ -30,7 +30,7 @@ void display(linkedlist* L){
     }
     node* curr = L->head;
     printf("\nll stack: ");
-    while (curr != NULL) { 
+    while (curr != NULL) {
         printf(" %d -->", curr->data);
         curr = curr->link;
     }
@@ -88,23 +88,19 @@ int main(){
         case 1:
             printf("\nnewnode value:");
             scanf("%d",&operand);
-            clear_terminal();
             appendnode(A,operand);
             break;
         
         case 2:
-            clear_terminal();
             popnode(A);
             break;
 
         case 3:
-            clear_terminal();
             printf("\nprogram exiting\n");
             exit(0);
             break;
 
         default:
-            clear_terminal();
             printf("\nInvalid option");
             break;
     }}
