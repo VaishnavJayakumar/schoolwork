@@ -58,6 +58,7 @@ tree* createtree(){
 void preorder(node* m){
     if(m != NULL){
         displaynode(m);
+        printf(",");
         preorder(m->left);
         preorder(m->right);
     }
@@ -67,6 +68,7 @@ void inorder(node* m){
     if(m != NULL){
         inorder(m->left);
         displaynode(m);
+        printf(",");
         inorder(m->right);
     }
 }
@@ -76,6 +78,7 @@ void postorder(node* m){
         postorder(m->left);
         postorder(m->right);
         displaynode(m);
+        printf(",");
     }
 }
 
