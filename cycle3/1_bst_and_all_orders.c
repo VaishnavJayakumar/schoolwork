@@ -1,62 +1,43 @@
-#include<stdio.h>
-#include<stdlib.h>
+#include <stdio.h>
+#include <stdlib.h>
 
-typedef struct node{
+typedef struct node {
     int data;
-    struct node* left;
-    struct node* right;
-}node;
+    struct node *left, *right;
+} node;
 
+typedef struct {
+    node *root;
+} tree;
 
-typedef struct{
-    node* root;
-}tree;
-
-
-node* createnode(int value){
-    node* n = (node*)malloc(sizeof(node));
-    
-    if(n == NULL){
-        printf("error at node allocation");
+node* createnode(int value) {
+    node *n = (node*)malloc(sizeof(node));
+    if (n == NULL) {
+        printf("Error at node allocation");
         exit(0);
     }
-
     n->data = value;
-    n->left = NULL;
-    n->right = NULL;
+    n->left = n->right = NULL;
     return n;
 }
 
-void debugnode(node* n){
-    if(n == NULL){
-        printf("node is NULL \n");
-        return;
-    }
-    printf("%p %d %p %p \n",n,n->data,n->left,n->right);
+void displaynode(node *n) {
+    if (n == NULL) printf("Node is NULL\n");
+    else printf("%d", n->data);
 }
 
-void displaynode(node* n){
-    if(n == NULL){
-        printf("node is NULL \n");
-        return;
-    }
-    printf("%d",n->data);
-}
-
-tree* createtree(){
-    tree* t = (tree*)malloc(sizeof(tree));
-    
-    if(t == NULL){
-        printf("error at tree allocation");
+tree* createtree() {
+    tree *t = (tree*)malloc(sizeof(tree));
+    if (t == NULL) {
+        printf("Error at tree allocation");
         exit(0);
     }
-
     t->root = NULL;
     return t;
 }
 
-void preorder(node* m){
-    if(m != NULL){
+void preorder(node *m) {
+    if (m != NULL) {
         displaynode(m);
         printf(",");
         preorder(m->left);
@@ -64,8 +45,8 @@ void preorder(node* m){
     }
 }
 
-void inorder(node* m){
-    if(m != NULL){
+void inorder(node *m) {
+    if (m != NULL) {
         inorder(m->left);
         displaynode(m);
         printf(",");
@@ -73,8 +54,8 @@ void inorder(node* m){
     }
 }
 
-void postorder(node* m){
-    if(m != NULL){
+void postorder(node *m) {
+    if (m != NULL) {
         postorder(m->left);
         postorder(m->right);
         displaynode(m);
@@ -82,78 +63,59 @@ void postorder(node* m){
     }
 }
 
-void traverse(tree* T,int mode){
-    node* m = T->root;
-    if(m == NULL){
-        printf("Tree is empty");
+void traverse(tree *T, int mode) {
+    node *m = T->root;
+    if (m == NULL) {
+        printf("Tree is empty\n");
         return;
     }
-    else if(mode == -1){
-        printf("preorder : ");
+    if (mode == -1) {
+        printf("Preorder: ");
         preorder(m);
-    }
-    else if(mode == 0){
-        printf("inorder : ");
+    } else if (mode == 0) {
+        printf("Inorder: ");
         inorder(m);
-    }
-    else if(mode == 1){
-        printf("postorder : ");
+    } else if (mode == 1) {
+        printf("Postorder: ");
         postorder(m);
     }
     printf("\n");
 }
 
-
-node* Iinsertnode(node* m,node* n){
-    if(m == NULL){
-        m = n;
-    }
-    else if(m->data > n->data){
-        m->left = Iinsertnode(m->left,n);
-    }
-    else if(m->data < n->data){
-        m->right = Iinsertnode(m->right,n);
-    }
+node* Iinsertnode(node *m, node *n) {
+    if (m == NULL) m = n;
+    else if (m->data > n->data) m->left = Iinsertnode(m->left, n);
+    else if (m->data < n->data) m->right = Iinsertnode(m->right, n);
     return m;
 }
 
-void insertnode(tree* T, int value){
-    node* n = createnode(value);
-    T->root = Iinsertnode(T->root,n);
+void insertnode(tree *T, int value) {
+    T->root = Iinsertnode(T->root, createnode(value));
 }
 
+int main() {
+    tree *T = createtree();
+    int opcode, operand;
 
-int main(){
-    tree* T = createtree();
-    int opcode = 0;
-    int operand = 0;
     while (1) {
-        traverse(T,-1);
-        traverse(T,0);
-        traverse(T,1);
-        printf("\n\nSelect action : \
-        \n1 insert node\
-        \n2 exit\
-        \n\t\t:");
+        traverse(T, -1);
+        traverse(T, 0);
+        traverse(T, 1);
+        printf("\nSelect action:\n1. Insert node\n2. Exit\n\t:");
         scanf("%d", &opcode);
+
         switch (opcode) {
             case 1:
-                printf("\nnewnode value:");
+                printf("New node value: ");
                 scanf("%d", &operand);
                 insertnode(T, operand);
                 break;
-
             case 2:
-                printf("\nprogram exiting\n");
+                printf("Program exiting\n");
                 exit(0);
-                break;
-
             default:
-                printf("\nInvalid option");
-                break;
+                printf("Invalid option\n");
         }
     }
-    
-    printf("\n");
     return 0;
 }
